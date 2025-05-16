@@ -38,3 +38,7 @@ body
 {
     color:gray;
 }
+
+.done {
+    color: rgb(8, 218, 78);
+}
