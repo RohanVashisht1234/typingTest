@@ -33,7 +33,7 @@ main {
     padding: 20px;
     border-radius: 12px;
     box-shadow: 0 6px 15px rgba(0, 0, 0, 0.5);
-    scroll-behavior: smooth;
+    /* scroll-behavior: smooth; */
     width: 100%;
     max-width: 1000px;
     box-sizing: border-box;
@@ -59,7 +59,7 @@ main {
     color: gray;
 }
 
-.done {
+.correct {
     color: rgb(8, 218, 78);
     transform: scale(1.1);
 }
@@ -126,4 +126,10 @@ nav button:hover {
 
 #logo {
     margin-left: 10px;
+}
+
+.cursor {
+    border-right: 2px solid yellow;
+    border-bottom-right-radius: 0;
+    border-top-right-radius: 0;
 }

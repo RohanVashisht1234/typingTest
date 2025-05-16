@@ -1,111 +1,158 @@
-const $root = document.getElementById("root");
-const $errorCount = document.getElementById("errorCount");
-const $correctCount = document.getElementById("correctCount");
-const $totalCharacters = document.getElementById("totalCharacters");
-const $Timer = document.getElementById("Timer");
-const $refresh = document.getElementById("refresh");
+// DOM Elements
+const $ = (id) => document.getElementById(id);
+const $root           = $("root");
+const $errorCount     = $("errorCount");
+const $correctCount   = $("correctCount");
+const $totalCharacters= $("totalCharacters");
+const $Timer          = $("Timer");
+const $refresh        = $("refresh");
 
+// Game Settings
+const GAME_TIME = 15;
 const sentences = [
-  "Cactus lantern biscuit velocity marble thunder wallet penguin galaxy domino ketchup radar vacuum blanket slipper walnut giraffe hammock tornado algebra jungle tractor lemonade faucet orbit eclipse yogurt canoe magnet fossil lantern pyramid avocado oxygen bicycle dinosaur trumpet kiwi triangle zipper volcano penguin saxophone igloo mustard telescope suitcase planet shoelace blueprint crocodile satellite jellyfish unicorn parachute eclipse shovel pancake iceberg lantern cupboard snorkel trampoline rainbow battery calculator whistle donut shoelace spaghetti tambourine snorkel blueprint suitcase wardrobe jellybean cupcake raccoon telescope maracas xylophone cocoon hammock pancake waffle anchor mustard blender tornado snowflake jellyfish yo-yo zipper volcano pancake magnet saxophone unicorn marshmallow elevator trampoline hammock cupboard mustard volcano trumpet coconut lava triangle hammock tornado spaghetti calculator tambourine yo-yo avocado blueprint jellybean cupboard saxophone zipper volcano pancake marshmallow yo-yo oxygen jellyfish triangle parachute telescope unicorn igloo spaghetti shoelace snowflake cocoon mustard calculator lava tambourine maracas jungle volcano elevator blueprint cupcake saxophone hammock fossil blueprint yo-yo spaghetti tambourine jellybean pancake shoelace coconut jellyfish rainbow calculator marshmallow parachute cocoon jungle satellite xylophone blender parachute fossil jellyfish elevator avalanche saxophone volcano pancake suitcase xylophone marshmallow blueprint cupcake jungle blueprint raccoon oxygen blueprint pancake tornado avocado shoelace igloo jellyfish cocoon tambourine blender triangle parachute giraffe shoelace xylophone satellite fossil raccoon suitcase marshmallow yo-yo elevator blueprint cupcake jellybean pancake tornado giraffe satellite maracas shoelace volcano blender saxophone blueprint marshmallow tambourine elevator jungle triangle shoelace pancake blueprint marshmallow maracas tambourine volcano suitcase satellite elevator jellyfish blender."
+  "Cactus lantern biscuit velocity marble thunder wallet penguin galaxy domino ketchup radar vacuum blanket slipper walnut giraffe hammock tornado algebra jungle tractor lemonade faucet orbit eclipse yogurt canoe magnet fossil ..."
 ];
 
-function shuffle(array) {
-  let result = array.slice();
-  let currentIndex = result.length;
-  while (currentIndex != 0) {
-    let randomIndex = Math.floor(Math.random() * currentIndex);
-    currentIndex--;
-    [result[currentIndex], result[randomIndex]] = [
-      result[randomIndex], result[currentIndex]
-    ];
+// Utility Functions
+const shuffle = (arr) => {
+  const a = arr.slice();
+  for (let i = a.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [a[i], a[j]] = [a[j], a[i]];
   }
-  return result;
-}
+  return a;
+};
 
-function calculatePerformance(correctCount, errorCount, timeInSeconds = 15) {
-  const total = correctCount + errorCount;
-  const accuracy = total === 0 ? 0 : (correctCount / total) * 100;
-  const speed = (correctCount / 5 / timeInSeconds) * 60;
-  const netScore = correctCount - errorCount;
+const calculatePerformance = (correct, errors, time = GAME_TIME) => {
+  const totalKeystrokes = correct + errors;
+  const accuracy = totalKeystrokes
+    ? (correct / totalKeystrokes) * 100
+    : 0;
+  const wpm = (correct / 5 / time) * 60;
   return {
-    accuracy: accuracy.toFixed(2),
-    speed: speed.toFixed(2),
-    netScore
+    accuracy:   accuracy.toFixed(2),
+    speedWPM:   wpm.toFixed(2),
+    netScore:   correct - errors
   };
-}
+};
 
-const reload = () => location.reload();
-
-let time = 15;
+// Game State
+let remainingTime    = GAME_TIME;
 let timerInterval;
-function startTimer(onEnd) {
+let nextCharId       = 0;
+let position         = 0;
+let correctCount     = 0;
+let errorCount       = 0;
+let backspaceCount   = 0;
+let gameStarted      = false;
+
+// Render the shuffled text
+const words = shuffle(sentences[0].split(" "));
+words.forEach(word => {
+  const wordDiv = document.createElement("div");
+  wordDiv.className = "word";
+
+  [...word, " "].forEach(ch => {
+    const span = document.createElement("div");
+    span.id = String(nextCharId++);
+    span.className = "character faded";
+    span.innerText = ch;
+    wordDiv.appendChild(span);
+  });
+
+  $root.appendChild(wordDiv);
+});
+
+// Timer logic
+const startTimer = onEnd => {
   timerInterval = setInterval(() => {
-    time -= 1;
-    $Timer.innerText = `${time}s`;
-    if (time <= 0) {
+    remainingTime--;
+    $Timer.innerText = `${remainingTime}s`;
+    if (remainingTime <= 0) {
       clearInterval(timerInterval);
       onEnd();
     }
   }, 1000);
-}
+};
 
-const words = shuffle(sentences[0].split(" "));
-const listOfWordsAsDivs = [];
-let charId = 0;
-words.forEach((word) => {
-  const wordDiv = document.createElement("div");
-  wordDiv.classList.add("word");
-  word.split("").forEach((char) => {
-    const charDiv = document.createElement("div");
-    charDiv.id = charId++;
-    charDiv.classList.add("character", "faded");
-    charDiv.innerText = char;
-    wordDiv.appendChild(charDiv);
-  });
-  const spaceDiv = document.createElement("div");
-  spaceDiv.id = charId++;
-  spaceDiv.classList.add("character", "faded");
-  spaceDiv.innerText = " ";
-  wordDiv.appendChild(spaceDiv);
-  listOfWordsAsDivs.push(wordDiv);
-});
-listOfWordsAsDivs.forEach((wordDiv) => $root.appendChild(wordDiv));
+// Clean up and show results
+const endGame = () => {
+  document.removeEventListener("keydown", handleKey);
+  const { accuracy, speedWPM, netScore } =
+    calculatePerformance(correctCount, errorCount);
 
-let personTypedCount = 0;
-let errorCount = 0;
-let correctCount = 0;
-let gameStarted = false;
-function endGame() {
-  document.removeEventListener("keypress", handleTyping);
-  const result = calculatePerformance(correctCount, errorCount);
   alert(
-    `Result:\nAccuracy: ${result.accuracy}%\nScore: ${result.netScore}\nSpeed (WPM): ${result.speed}`
+    `Results:\n` +
+    `Accuracy: ${accuracy}%\n` +
+    `WPM: ${speedWPM}\n` +
+    `Net Score: ${netScore}\n` +
+    `Errors (incl. backspaces): ${errorCount}\n` +
+    `Backspaces: ${backspaceCount}`
   );
-}
+};
 
-function handleTyping(e) {
+// Main key handler
+const handleKey = e => {
   if (!gameStarted) {
     gameStarted = true;
     startTimer(endGame);
   }
-  const currentChar = document.getElementById(personTypedCount.toString());
-  if (!currentChar) return;
-  const typedChar = e.key === " " ? " " : e.key;
-  currentChar.classList.remove("faded");
-  if (typedChar === currentChar.innerText) {
-    currentChar.classList.add("done");
-    correctCount++;
-  } else {
-    currentChar.classList.add("error");
-    $errorCount.innerText = ++errorCount;
-  }
-  if (personTypedCount > 20) {
-    $root.scrollLeft += 15;
-  }
-  $correctCount.innerText = correctCount;
-  $totalCharacters.innerText = personTypedCount + 1;
-  personTypedCount++;
-}
 
-document.addEventListener("keypress", handleTyping);
-$refresh.addEventListener("click", reload);
+  // --- BACKSPACE HANDLING & PENALTY ---
+  if (e.key === "Backspace") {
+    if (position > 0) {
+      position--;
+      backspaceCount++;
+      errorCount++;
+      $errorCount.innerText = errorCount;
+
+      // Re-fade the character we just “erased”
+      const erased = $(String(position));
+      erased.classList.remove("correct", "error", "cursor");
+      erased.classList.add("faded");
+
+      // Move cursor back
+      const prev = $(String(position - 1));
+      if (prev) {
+        prev.classList.add("cursor");
+      }
+
+      $totalCharacters.innerText = position;
+    }
+    return;
+  }
+
+  // --- NORMAL CHAR HANDLING ---
+  const current = $(String(position));
+  const prev    = $(String(position - 1));
+  if (!current) return;
+
+  // Move the cursor styling
+  if (prev) prev.classList.remove("cursor");
+  current.classList.add("cursor", "active");
+  current.classList.remove("faded");
+
+  // Check correctness
+  const typed = e.key === " " ? " " : e.key;
+  if (typed === current.innerText) {
+    current.classList.add("correct");
+    correctCount++;
+    $correctCount.innerText = correctCount;
+  } else {
+    current.classList.add("error");
+    errorCount++;
+    $errorCount.innerText = errorCount;
+  }
+
+  position++;
+  $totalCharacters.innerText = position;
+
+  // Auto-scroll once you get far enough
+  if (position > 20) {
+    $root.scrollLeft += 25;
+  }
+};
+
+// Set up listeners
+document.addEventListener("keydown", handleKey);
+$refresh.addEventListener("click", () => location.reload());
