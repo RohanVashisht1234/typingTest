@@ -68,8 +68,7 @@ document.addEventListener("keypress", (e) => {
         $characterOnWhichTheUserIs.classList.add("done");
     } else {
         $characterOnWhichTheUserIs.classList.add("error");
-        errorCount++;
-        $errorCount.innerText = errorCount;
+        $errorCount.innerText = ++errorCount;
     }
     if(personTypedCount>20) {
         $root.scrollLeft += 15;
@@ -78,9 +77,11 @@ document.addEventListener("keypress", (e) => {
 })
 
 
-document.addEventListener("click", () => {
+function handleClick() {
     setTimeout(() => {
         console.log("time over");
     }, 15000);
-    document.removeEventListener("click");
-});
+    document.removeEventListener("click", handleClick);
+}
+
+document.addEventListener("click", handleClick);
