@@ -97,7 +97,7 @@ nav button:hover
     background-color: #3e3e58;
     padding: 5px;
 }
-
-.error {
-    color: red;
+#logo
+{
+    margin: 10px;
 }
