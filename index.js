@@ -12,25 +12,21 @@ const sentences = [
 function shuffle(array) {
   let result = array.slice();
   let currentIndex = result.length;
-
   while (currentIndex != 0) {
     let randomIndex = Math.floor(Math.random() * currentIndex);
     currentIndex--;
     [result[currentIndex], result[randomIndex]] = [
-      result[randomIndex],
-      result[currentIndex]
+      result[randomIndex], result[currentIndex]
     ];
   }
-
   return result;
 }
 
 function calculatePerformance(correctCount, errorCount, timeInSeconds = 15) {
   const total = correctCount + errorCount;
   const accuracy = total === 0 ? 0 : (correctCount / total) * 100;
-  const speed = (correctCount / timeInSeconds) * 60;
+  const speed = (correctCount / 5 / timeInSeconds) * 60;
   const netScore = correctCount - errorCount;
-
   return {
     accuracy: accuracy.toFixed(2),
     speed: speed.toFixed(2),
@@ -55,12 +51,10 @@ function startTimer(onEnd) {
 
 const words = shuffle(sentences[0].split(" "));
 const listOfWordsAsDivs = [];
-
 let charId = 0;
 words.forEach((word) => {
   const wordDiv = document.createElement("div");
   wordDiv.classList.add("word");
-
   word.split("").forEach((char) => {
     const charDiv = document.createElement("div");
     charDiv.id = charId++;
@@ -68,24 +62,19 @@ words.forEach((word) => {
     charDiv.innerText = char;
     wordDiv.appendChild(charDiv);
   });
-
   const spaceDiv = document.createElement("div");
   spaceDiv.id = charId++;
   spaceDiv.classList.add("character", "faded");
   spaceDiv.innerText = " ";
   wordDiv.appendChild(spaceDiv);
-
   listOfWordsAsDivs.push(wordDiv);
 });
-
 listOfWordsAsDivs.forEach((wordDiv) => $root.appendChild(wordDiv));
 
-// ========== GAME LOGIC ==========
 let personTypedCount = 0;
 let errorCount = 0;
 let correctCount = 0;
 let gameStarted = false;
-
 function endGame() {
   document.removeEventListener("keypress", handleTyping);
   const result = calculatePerformance(correctCount, errorCount);
@@ -99,14 +88,10 @@ function handleTyping(e) {
     gameStarted = true;
     startTimer(endGame);
   }
-
   const currentChar = document.getElementById(personTypedCount.toString());
   if (!currentChar) return;
-
   const typedChar = e.key === " " ? " " : e.key;
-
   currentChar.classList.remove("faded");
-
   if (typedChar === currentChar.innerText) {
     currentChar.classList.add("done");
     correctCount++;
@@ -114,9 +99,9 @@ function handleTyping(e) {
     currentChar.classList.add("error");
     $errorCount.innerText = ++errorCount;
   }
-
-  if (personTypedCount > 20) $root.scrollLeft += 15;
-
+  if (personTypedCount > 20) {
+    $root.scrollLeft += 15;
+  }
   $correctCount.innerText = correctCount;
   $totalCharacters.innerText = personTypedCount + 1;
   personTypedCount++;
