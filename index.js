@@ -61,27 +61,26 @@ let personTypedCount = 0;
 let errorCount = 0;
 
 document.addEventListener("keypress", (e) => {
-    const characterOnWhichTheUserIs = document.getElementById(personTypedCount.toString());
-    let characterToCompair = e.key;
-    if(e.key == " ") {
-        characterToCompair = ""
-    }
-    if (characterToCompair === characterOnWhichTheUserIs.innerText) {
-        characterOnWhichTheUserIs.classList.remove("faded");
-        characterOnWhichTheUserIs.classList.add("done");
-        personTypedCount++;
+    const $characterOnWhichTheUserIs = document.getElementById(personTypedCount.toString());
+    let characterToCompair = e.key === " " ? "" : e.key;
+    $characterOnWhichTheUserIs.classList.remove("faded");
+    if (characterToCompair === $characterOnWhichTheUserIs.innerText) {
+        $characterOnWhichTheUserIs.classList.add("done");
     } else {
+        $characterOnWhichTheUserIs.classList.add("error");
         errorCount++;
         $errorCount.innerText = errorCount;
     }
+    if(personTypedCount>20) {
+        $root.scrollLeft += 15;
+    }
+    personTypedCount++;
 })
 
 
-    (() => {
-        document.addEventListener("click", () => {
-            setTimeout(() => {
-                console.log("time over");
-            }, 15000);
-            document.removeEventListener("click");
-        });
-    })()
+document.addEventListener("click", () => {
+    setTimeout(() => {
+        console.log("time over");
+    }, 15000);
+    document.removeEventListener("click");
+});
