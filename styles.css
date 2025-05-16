@@ -9,6 +9,7 @@ body
     padding: 20px;
     background-color: #1e1e2f;
     color: #e1e1e6;
+    overflow: hidden;
 }
 .sentence-container 
 {
@@ -38,7 +39,37 @@ body
 {
     color:gray;
 }
-
-.done {
+.done 
+{
     color: rgb(8, 218, 78);
+}
+nav 
+{
+    display: flex;
+    justify-content: center;
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    background: #25254d;
+    padding: 10px 0;
+    z-index: 1000;
+    display: flex;
+    justify-content: space-between;
+    align-items: right;
+}
+nav button 
+{
+    background: #2e2e4e;
+    color: #e1e1e6;
+    border: none;
+    padding: 10px 20px;
+    margin: 0 5px;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+nav button:hover 
+{
+    background: #3e3e5e;
 }
