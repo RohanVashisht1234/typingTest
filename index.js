@@ -1,24 +1,3 @@
-// Select a sentence:
-const sentences = [
-    "Cactus lantern biscuit velocity marble thunder wallet penguin galaxy domino ketchup radar vacuum blanket slipper walnut giraffe hammock tornado algebra jungle tractor lemonade faucet orbit eclipse yogurt canoe magnet fossil lantern pyramid avocado oxygen bicycle dinosaur trumpet kiwi triangle zipper volcano penguin saxophone igloo mustard telescope suitcase planet shoelace blueprint crocodile satellite jellyfish unicorn parachute eclipse shovel pancake iceberg lantern cupboard snorkel trampoline rainbow battery calculator whistle donut shoelace spaghetti tambourine snorkel blueprint suitcase wardrobe jellybean cupcake raccoon telescope maracas xylophone cocoon hammock pancake waffle anchor mustard blender tornado snowflake jellyfish yo-yo zipper volcano pancake magnet saxophone unicorn marshmallow elevator trampoline hammock cupboard mustard volcano trumpet coconut lava triangle hammock tornado spaghetti calculator tambourine yo-yo avocado blueprint jellybean cupboard saxophone zipper volcano pancake marshmallow yo-yo oxygen jellyfish triangle parachute telescope unicorn igloo spaghetti shoelace snowflake cocoon mustard calculator lava tambourine maracas jungle volcano elevator blueprint cupcake saxophone hammock fossil blueprint yo-yo spaghetti tambourine jellybean pancake shoelace coconut jellyfish rainbow calculator marshmallow parachute cocoon jungle satellite xylophone blender parachute fossil jellyfish elevator avalanche saxophone volcano pancake suitcase xylophone marshmallow blueprint cupcake jungle blueprint raccoon oxygen blueprint pancake tornado avocado shoelace igloo jellyfish cocoon tambourine blender triangle parachute giraffe shoelace xylophone satellite fossil raccoon suitcase marshmallow yo-yo elevator blueprint cupcake jellybean pancake tornado giraffe satellite maracas shoelace volcano blender saxophone blueprint marshmallow tambourine elevator jungle triangle shoelace pancake blueprint marshmallow maracas tambourine volcano suitcase satellite elevator jellyfish blender."
-];
-
-
-function calculatePerformance(correctCount, errorCount, timeInSeconds = 15) {
-    const total = correctCount + errorCount;
-    const accuracy = total === 0 ? 0 : (correctCount / total) * 100;
-    const speed = (correctCount / timeInSeconds) * 60;
-    const netScore = correctCount - errorCount;
-
-    return {
-        accuracy,
-        speed,
-        netScore
-    };
-};
-
-
-
 const $root = document.getElementById("root");
 const $errorCount = document.getElementById("errorCount");
 const $correctCount = document.getElementById("correctCount");
@@ -26,116 +5,122 @@ const $totalCharacters = document.getElementById("totalCharacters");
 const $Timer = document.getElementById("Timer");
 const $refresh = document.getElementById("refresh");
 
-// Make it random:
+const sentences = [
+  "Cactus lantern biscuit velocity marble thunder wallet penguin galaxy domino ketchup radar vacuum blanket slipper walnut giraffe hammock tornado algebra jungle tractor lemonade faucet orbit eclipse yogurt canoe magnet fossil lantern pyramid avocado oxygen bicycle dinosaur trumpet kiwi triangle zipper volcano penguin saxophone igloo mustard telescope suitcase planet shoelace blueprint crocodile satellite jellyfish unicorn parachute eclipse shovel pancake iceberg lantern cupboard snorkel trampoline rainbow battery calculator whistle donut shoelace spaghetti tambourine snorkel blueprint suitcase wardrobe jellybean cupcake raccoon telescope maracas xylophone cocoon hammock pancake waffle anchor mustard blender tornado snowflake jellyfish yo-yo zipper volcano pancake magnet saxophone unicorn marshmallow elevator trampoline hammock cupboard mustard volcano trumpet coconut lava triangle hammock tornado spaghetti calculator tambourine yo-yo avocado blueprint jellybean cupboard saxophone zipper volcano pancake marshmallow yo-yo oxygen jellyfish triangle parachute telescope unicorn igloo spaghetti shoelace snowflake cocoon mustard calculator lava tambourine maracas jungle volcano elevator blueprint cupcake saxophone hammock fossil blueprint yo-yo spaghetti tambourine jellybean pancake shoelace coconut jellyfish rainbow calculator marshmallow parachute cocoon jungle satellite xylophone blender parachute fossil jellyfish elevator avalanche saxophone volcano pancake suitcase xylophone marshmallow blueprint cupcake jungle blueprint raccoon oxygen blueprint pancake tornado avocado shoelace igloo jellyfish cocoon tambourine blender triangle parachute giraffe shoelace xylophone satellite fossil raccoon suitcase marshmallow yo-yo elevator blueprint cupcake jellybean pancake tornado giraffe satellite maracas shoelace volcano blender saxophone blueprint marshmallow tambourine elevator jungle triangle shoelace pancake blueprint marshmallow maracas tambourine volcano suitcase satellite elevator jellyfish blender."
+];
+
 function shuffle(array) {
-    let result = array.slice();
-    let currentIndex = result.length;
+  let result = array.slice();
+  let currentIndex = result.length;
 
-    while (currentIndex != 0) {
-        let randomIndex = Math.floor(Math.random() * currentIndex);
-        currentIndex--;
-        [result[currentIndex], result[randomIndex]] = [
-            result[randomIndex], result[currentIndex]];
-    }
+  while (currentIndex != 0) {
+    let randomIndex = Math.floor(Math.random() * currentIndex);
+    currentIndex--;
+    [result[currentIndex], result[randomIndex]] = [
+      result[randomIndex],
+      result[currentIndex]
+    ];
+  }
 
-    return result;
+  return result;
 }
 
-const splitted_sentence = shuffle(sentences[0].split(" "));
-console.log(splitted_sentence);
-const listOfWordsAsDivs = [];
+function calculatePerformance(correctCount, errorCount, timeInSeconds = 15) {
+  const total = correctCount + errorCount;
+  const accuracy = total === 0 ? 0 : (correctCount / total) * 100;
+  const speed = (correctCount / timeInSeconds) * 60;
+  const netScore = correctCount - errorCount;
 
-let count = 0;
-splitted_sentence.map((word) => {
-    const div = document.createElement("div");
-    div.classList.add("word");
-    word.split("").map((character) => {
-        const characterDiv = document.createElement("div");
-        characterDiv.id = count++;
-        characterDiv.classList.add("character");
-        characterDiv.classList.add("faded");
-
-        characterDiv.innerText = character;
-        div.appendChild(characterDiv);
-    });
-    const characterSpaceDiv = document.createElement("div");
-    characterSpaceDiv.id = count++;
-    characterSpaceDiv.classList.add("character");
-    characterSpaceDiv.classList.add("faded");
-
-    characterSpaceDiv.innerText = " ";
-    div.appendChild(characterSpaceDiv);
-    listOfWordsAsDivs.push(div);
-});
-
-listOfWordsAsDivs.map((wordDiv) => {
-    $root.appendChild(wordDiv);
-});
-
-
-
-
-
-
-let personTypedCount = 0;
-let errorCount = 0;
-let correctCount = 0;
-
-document.addEventListener("keypress", (e) => {
-    const $characterOnWhichTheUserIs = document.getElementById(personTypedCount.toString());
-    let characterToCompair = e.key === " " ? "" : e.key;
-    $characterOnWhichTheUserIs.classList.remove("faded");
-    if (characterToCompair === $characterOnWhichTheUserIs.innerText) {
-        $characterOnWhichTheUserIs.classList.add("done");
-        correctCount++;
-    } else {
-        $characterOnWhichTheUserIs.classList.add("error");
-        $errorCount.innerText = ++errorCount;
-    }
-    if (personTypedCount > 20) {
-        $root.scrollLeft += 15;
-    }
-    $correctCount.innerText = correctCount;
-    $totalCharacters.innerText = personTypedCount;
-
-    personTypedCount++;
-})
-
+  return {
+    accuracy: accuracy.toFixed(2),
+    speed: speed.toFixed(2),
+    netScore
+  };
+}
 
 const reload = () => location.reload();
 
 let time = 15;
-
-const startTimer = () => {
-    setTimeout(() => {
-        time -= 1;
-        $Timer.innerText = `${time}s`
-        if (time != 0) startTimer();
-    }, 1000);
+let timerInterval;
+function startTimer(onEnd) {
+  timerInterval = setInterval(() => {
+    time -= 1;
+    $Timer.innerText = `${time}s`;
+    if (time <= 0) {
+      clearInterval(timerInterval);
+      onEnd();
+    }
+  }, 1000);
 }
 
-function handleClick() {
-    startTimer();
-    const res = calculatePerformance(correctCount, errorCount);
-    setTimeout(() => {
-        alert(
-            "Result:\n" +
-            "Accuracy: " + res.accuracy + "\n" +
-            "Score: " + res.netScore + "\n" +
-            "Speed (WPM): " + res.speed
-        );
-    }, 15000);
-    document.removeEventListener("keypress", handleClick);
+const words = shuffle(sentences[0].split(" "));
+const listOfWordsAsDivs = [];
+
+let charId = 0;
+words.forEach((word) => {
+  const wordDiv = document.createElement("div");
+  wordDiv.classList.add("word");
+
+  word.split("").forEach((char) => {
+    const charDiv = document.createElement("div");
+    charDiv.id = charId++;
+    charDiv.classList.add("character", "faded");
+    charDiv.innerText = char;
+    wordDiv.appendChild(charDiv);
+  });
+
+  const spaceDiv = document.createElement("div");
+  spaceDiv.id = charId++;
+  spaceDiv.classList.add("character", "faded");
+  spaceDiv.innerText = " ";
+  wordDiv.appendChild(spaceDiv);
+
+  listOfWordsAsDivs.push(wordDiv);
+});
+
+listOfWordsAsDivs.forEach((wordDiv) => $root.appendChild(wordDiv));
+
+// ========== GAME LOGIC ==========
+let personTypedCount = 0;
+let errorCount = 0;
+let correctCount = 0;
+let gameStarted = false;
+
+function endGame() {
+  document.removeEventListener("keypress", handleTyping);
+  const result = calculatePerformance(correctCount, errorCount);
+  alert(
+    `Result:\nAccuracy: ${result.accuracy}%\nScore: ${result.netScore}\nSpeed (WPM): ${result.speed}`
+  );
 }
 
-document.addEventListener("keypress", handleClick);
+function handleTyping(e) {
+  if (!gameStarted) {
+    gameStarted = true;
+    startTimer(endGame);
+  }
 
+  const currentChar = document.getElementById(personTypedCount.toString());
+  if (!currentChar) return;
 
+  const typedChar = e.key === " " ? " " : e.key;
 
+  currentChar.classList.remove("faded");
 
-$refresh.addEventListener("click", () => {
-    reload();
-})
+  if (typedChar === currentChar.innerText) {
+    currentChar.classList.add("done");
+    correctCount++;
+  } else {
+    currentChar.classList.add("error");
+    $errorCount.innerText = ++errorCount;
+  }
 
+  if (personTypedCount > 20) $root.scrollLeft += 15;
 
+  $correctCount.innerText = correctCount;
+  $totalCharacters.innerText = personTypedCount + 1;
+  personTypedCount++;
+}
 
+document.addEventListener("keypress", handleTyping);
+$refresh.addEventListener("click", reload);

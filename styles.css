@@ -101,3 +101,7 @@ nav button:hover
 {
     margin: 10px;
 }
+
+.error {
+    color: red;
+}
