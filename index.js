@@ -4,7 +4,7 @@ const sentences = [
 ];
 
 const $startButtton = document.getElementById("startButtton");
-
+const $root = document.getElementById("root");
 
 // Make it random:
 function shuffle(array) {
@@ -40,12 +40,13 @@ splitted_sentence.map((word) => {
 });
 
 listOfDivs.map((div) => {
-    document.body.appendChild(div);
+    $root.appendChild(div);
 });
 
 
 $startButtton.addEventListener("click", ()=> {
     setTimeout(() => {
-        console.log("time over")
+        console.log("time over");
     }, 15000);
 });
+

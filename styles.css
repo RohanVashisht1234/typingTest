@@ -1,5 +1,4 @@
-body 
-{
+body {
     font-family: 'Courier New', Courier, monospace;
     background-color: #f0f0f0;
     color: #333;
@@ -10,20 +9,24 @@ body
     height: 100vh;
     margin: 0;
 }
-.sentence-container 
-{
+
+.sentence-container {
     display: flex;
     flex-wrap: wrap;
-    max-width: 80vw; 
+    max-width: 80vw;
 }
-.word 
-{
+
+.word {
     display: flex;
     margin-bottom: 10px;
     margin-right: 16px;
 }
-.character 
-{
+
+.character {
     font-size: 24px;
     margin-right: 5px;
+}
+
+.faded {
+    color:gray;
 }
