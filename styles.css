@@ -73,7 +73,27 @@ nav button:hover
 {
     background: #3e3e5e;
 }
-
-.error {
-    color: red;
+#errorCount
+{
+    color: #ff5555;
+    background-color: #3e3e58;
+    padding: 5px;
+}
+#correctCount
+{
+    color: #50fa7b;
+    background-color: #3e3e58;
+    padding: 5px;
+}
+#totalCharacters
+{
+    color: #f1fa8c;
+    background-color: #3e3e58;
+    padding: 5px;
+}
+#Timer
+{
+    color: #ffb86c;
+    background-color: #3e3e58;
+    padding: 5px;
 }
