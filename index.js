@@ -5,6 +5,10 @@ const sentences = [
 
 const $root = document.getElementById("root");
 const $errorCount = document.getElementById("errorCount");
+const $correctCount = document.getElementById("correctCount");
+const $totalCharacters = document.getElementById("totalCharacters");
+const $Timer = document.getElementById("Timer");
+const $refresh = document.getElementById("refresh");
 
 // Make it random:
 function shuffle(array) {
@@ -70,18 +74,28 @@ document.addEventListener("keypress", (e) => {
         $characterOnWhichTheUserIs.classList.add("error");
         $errorCount.innerText = ++errorCount;
     }
-    if(personTypedCount>20) {
+    if (personTypedCount > 20) {
         $root.scrollLeft += 15;
     }
     personTypedCount++;
 })
 
 
+const reload = () => location.reload();
+
 function handleClick() {
     setTimeout(() => {
-        console.log("time over");
+        alert("Result:" + "\n");
     }, 15000);
-    document.removeEventListener("click", handleClick);
+    document.removeEventListener("keypress", handleClick);
 }
 
-document.addEventListener("click", handleClick);
+document.addEventListener("keypress", handleClick);
+
+
+
+
+$refresh.addEventListener("click", ()=>{
+    reload();
+})
+
