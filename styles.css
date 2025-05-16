@@ -73,3 +73,7 @@ nav button:hover
 {
     background: #3e3e5e;
 }
+
+.error {
+    color: red;
+}
