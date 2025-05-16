@@ -1,32 +1,39 @@
-body {
+body 
+{
     font-family: 'Courier New', Courier, monospace;
-    background-color: #f0f0f0;
-    color: #333;
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: center;
     height: 100vh;
-    margin: 0;
+    padding: 20px;
+    background-color: #1e1e2f;
+    color: #e1e1e6;
 }
-
-.sentence-container {
+.sentence-container 
+{
     display: flex;
-    flex-wrap: wrap;
-    max-width: 80vw;
+    border: 1px solid #ccc;
+    text-align: center;
+    max-width: 800px;
+    background: #25253e;
+    padding: 30px;
+    border-radius: 12px;
+    box-shadow: 0 6px 15px rgba(0, 0, 0, 0.5);
 }
-
-.word {
+.word 
+{
     display: flex;
     margin-bottom: 10px;
     margin-right: 16px;
 }
-
-.character {
+.character 
+{
     font-size: 24px;
+    background-color: #2e2e4e;
     margin-right: 5px;
 }
-
-.faded {
+.faded 
+{
     color:gray;
 }
