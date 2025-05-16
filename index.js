@@ -3,6 +3,22 @@ const sentences = [
     "Cactus lantern biscuit velocity marble thunder wallet penguin galaxy domino ketchup radar vacuum blanket slipper walnut giraffe hammock tornado algebra jungle tractor lemonade faucet orbit eclipse yogurt canoe magnet fossil lantern pyramid avocado oxygen bicycle dinosaur trumpet kiwi triangle zipper volcano penguin saxophone igloo mustard telescope suitcase planet shoelace blueprint crocodile satellite jellyfish unicorn parachute eclipse shovel pancake iceberg lantern cupboard snorkel trampoline rainbow battery calculator whistle donut shoelace spaghetti tambourine snorkel blueprint suitcase wardrobe jellybean cupcake raccoon telescope maracas xylophone cocoon hammock pancake waffle anchor mustard blender tornado snowflake jellyfish yo-yo zipper volcano pancake magnet saxophone unicorn marshmallow elevator trampoline hammock cupboard mustard volcano trumpet coconut lava triangle hammock tornado spaghetti calculator tambourine yo-yo avocado blueprint jellybean cupboard saxophone zipper volcano pancake marshmallow yo-yo oxygen jellyfish triangle parachute telescope unicorn igloo spaghetti shoelace snowflake cocoon mustard calculator lava tambourine maracas jungle volcano elevator blueprint cupcake saxophone hammock fossil blueprint yo-yo spaghetti tambourine jellybean pancake shoelace coconut jellyfish rainbow calculator marshmallow parachute cocoon jungle satellite xylophone blender parachute fossil jellyfish elevator avalanche saxophone volcano pancake suitcase xylophone marshmallow blueprint cupcake jungle blueprint raccoon oxygen blueprint pancake tornado avocado shoelace igloo jellyfish cocoon tambourine blender triangle parachute giraffe shoelace xylophone satellite fossil raccoon suitcase marshmallow yo-yo elevator blueprint cupcake jellybean pancake tornado giraffe satellite maracas shoelace volcano blender saxophone blueprint marshmallow tambourine elevator jungle triangle shoelace pancake blueprint marshmallow maracas tambourine volcano suitcase satellite elevator jellyfish blender."
 ];
 
+
+function calculatePerformance(correctCount, errorCount, timeInSeconds = 15) {
+    const total = correctCount + errorCount;
+    const accuracy = total === 0 ? 0 : (correctCount / total) * 100;
+    const speed = (correctCount / timeInSeconds) * 60;
+    const netScore = correctCount - errorCount;
+
+    return {
+        accuracy,
+        speed,
+        netScore
+    };
+};
+
+
+
 const $root = document.getElementById("root");
 const $errorCount = document.getElementById("errorCount");
 const $correctCount = document.getElementById("correctCount");
@@ -63,6 +79,7 @@ listOfWordsAsDivs.map((wordDiv) => {
 
 let personTypedCount = 0;
 let errorCount = 0;
+let correctCount = 0;
 
 document.addEventListener("keypress", (e) => {
     const $characterOnWhichTheUserIs = document.getElementById(personTypedCount.toString());
@@ -70,6 +87,7 @@ document.addEventListener("keypress", (e) => {
     $characterOnWhichTheUserIs.classList.remove("faded");
     if (characterToCompair === $characterOnWhichTheUserIs.innerText) {
         $characterOnWhichTheUserIs.classList.add("done");
+        correctCount++;
     } else {
         $characterOnWhichTheUserIs.classList.add("error");
         $errorCount.innerText = ++errorCount;
@@ -77,15 +95,35 @@ document.addEventListener("keypress", (e) => {
     if (personTypedCount > 20) {
         $root.scrollLeft += 15;
     }
+    $correctCount.innerText = correctCount;
+    $totalCharacters.innerText = personTypedCount;
+
     personTypedCount++;
 })
 
 
 const reload = () => location.reload();
 
-function handleClick() {
+let time = 15;
+
+const startTimer = () => {
     setTimeout(() => {
-        alert("Result:" + "\n");
+        time -= 1;
+        $Timer.innerText = `${time}s`
+        if (time != 0) startTimer();
+    }, 1000);
+}
+
+function handleClick() {
+    startTimer();
+    const res = calculatePerformance(correctCount, errorCount);
+    setTimeout(() => {
+        alert(
+            "Result:\n" +
+            "Accuracy: " + res.accuracy + "\n" +
+            "Score: " + res.netScore + "\n" +
+            "Speed (WPM): " + res.speed
+        );
     }, 15000);
     document.removeEventListener("keypress", handleClick);
 }
@@ -95,7 +133,9 @@ document.addEventListener("keypress", handleClick);
 
 
 
-$refresh.addEventListener("click", ()=>{
+$refresh.addEventListener("click", () => {
     reload();
 })
+
+
 
